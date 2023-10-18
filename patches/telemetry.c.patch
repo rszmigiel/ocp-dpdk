@@ -1,5 +1,5 @@
---- telemetry.c 2022-11-27 10:36:36.000000000 +0000
-+++ telemetry.c.new     2023-10-18 20:17:50.813113748 +0000
+--- lib/telemetry/telemetry.c.orig      2022-11-27 10:36:36.000000000 +0000
++++ lib/telemetry/telemetry.c   2023-10-18 20:17:50.813113748 +0000
 @@ -398,6 +398,12 @@
  static void *
  socket_listener(void *socket)
