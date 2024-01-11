@@ -1,15 +1,14 @@
---- a/lib/telemetry/telemetry.c
-+++ b/lib/telemetry/telemetry.c
-@@ -398,6 +398,12 @@
+--- a/lib/telemetry/telemetry.c	2024-01-11 12:03:10.406024659 +0000
++++ b/lib/telemetry/telemetry.c	2024-01-11 12:04:14.704278507 +0000
+@@ -398,6 +398,11 @@
  static void *
  socket_listener(void *socket)
  {
-+        struct sched_param sp;
-+        /* Set the priority to the highest priority allowed. */
-+        sp.sched_priority = sched_get_priority_max(SCHED_FIFO);
-+        /* Set the priority of the program to the highest priority allowed. */
-+       sched_setscheduler(0, SCHED_FIFO, &sp);
-+
-        while (1) {
-                pthread_t th;
-                int rc;
++	struct sched_param sp;
++	/* Set the priority to the highest priority allowed. */
++	sp.sched_priority = sched_get_priority_max(SCHED_FIFO);
++	/* Set the priority of the program to the highest priority allowed. */
++	sched_setscheduler(0, SCHED_FIFO, &sp);
+ 	while (1) {
+ 		pthread_t th;
+ 		int rc;
