@@ -40,6 +40,8 @@ NIC2=$(for (( c=0; c<$MAX; c++)); do printf -- "-a ${A_NIC2[$c]} "; done)
 CPUPPORT=$(( ${#cpus_sorted[@]} / $(( $MAX*2 )) ))
 echo "CPU per PORT ratio: ${CPUPPORT}"
 
+set -x
+
 eval ./dpdk-l3fwd \
 	-l ${RANGE} \
         -n 4 \
