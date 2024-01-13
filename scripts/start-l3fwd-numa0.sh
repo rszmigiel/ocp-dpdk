@@ -28,32 +28,27 @@ echo "Second CPU: ${cpus_sorted[+1]}"
 echo "Last CPU: ${cpus_sorted[-1]}"
 echo "Number of CPUs: ${#cpus_sorted[@]}"
 
-IFS="," read -r -a A_NIC1 <<< ${PCIDEVICE_OPENSHIFT_IO_ENS66F0}
-IFS="," read -r -a A_NIC2 <<< ${PCIDEVICE_OPENSHIFT_IO_ENS66F1}
+IFS="," read -r -a A_NIC1 <<< ${PCIDEVICE_OPENSHIFT_IO_ENP63S0}
 
 echo "Number of ports on NIC1: ${#A_NIC1[@]}"
-echo "Number of ports on NIC2: ${#A_NIC2[@]}"
 
 NIC1=$(for (( c=0; c<$MAX; c++)); do printf -- "-a ${A_NIC1[$c]} "; done)
-NIC2=$(for (( c=0; c<$MAX; c++)); do printf -- "-a ${A_NIC2[$c]} "; done)
 
-CPUPPORT=$(( ${#cpus_sorted[@]} / $(( $MAX*2 )) ))
+CPUPPORT=$(( ${#cpus_sorted[@]} / $(( $MAX )) ))
 echo "CPU per PORT ratio: ${CPUPPORT}"
 
 set -x
 
-eval ./dpdk-l3fwd \
-	-l ${RANGE} \
+echo ./dpdk-l3fwd \
+        -l ${RANGE} \
         -n 4 \
         ${NIC1} \
-        ${NIC2} \
         --proc-type=auto \
         --file-prefix=test112 \
         -- \
         -p 0xFFFFFFFF \
-	--config=$(printf \"; cc=0 ;for (( c=0; c<$(( $MAX * 2 )); c++)); do for (( q=0; q<${CPUPPORT}; q++ )); do printf "($c,$q,${cpus_sorted[$((cc++))]}),"; done; done | sed 's/,$//' ; printf \") \
+        --config=$(printf \"; cc=0 ;for (( c=0; c<$(( $MAX )); c++)); do for (( q=0; q<${CPUPPORT}; q++ )); do printf "($c,$q,${cpus_sorted[$((cc++))]}),"; done; done | sed 's/,$//' ; printf \") \
         --parse-ptype \
         -P \
-        $(for (( c=0; c<$MAX; c++ )); do printf -- "--eth-dest=$c,ba:be:01:01:01:%02x " $c; done ) \
-        $(for (( c=0; c<$MAX; c++ )); do printf -- "--eth-dest=$(($c+$MAX)),ba:be:02:02:02:%02x " $c; done )
+        $(for (( c=0; c<$MAX; c++ )); do printf -- "--eth-dest=$c,ba:be:01:01:01:%02x " $c; done )
 
