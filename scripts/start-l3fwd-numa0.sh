@@ -28,6 +28,17 @@ echo "Second CPU: ${cpus_sorted[+1]}"
 echo "Last CPU: ${cpus_sorted[-1]}"
 echo "Number of CPUs: ${#cpus_sorted[@]}"
 
+IFS="," read -a NICS <<< $(env | sed -nr 's/(PCIDEVICE_OPENSHIFT_IO_)([0-9A-Z]+)(.*)/\2/p' | sort -u | tr "\n" ",")
+
+echo "PFs to be used: ${NICS[@]}"
+
+for NIC in ${NICS[@]}
+ do
+   echo ${NIC}
+   PCIADDRS=PCIDEVICE_OPENSHIFT_IO_${NIC}
+   echo ${!PCIADDRS}
+ done
+
 IFS="," read -r -a A_NIC1 <<< ${PCIDEVICE_OPENSHIFT_IO_ENS66F0}
 IFS="," read -r -a A_NIC2 <<< ${PCIDEVICE_OPENSHIFT_IO_ENS66F1}
 
