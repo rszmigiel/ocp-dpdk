@@ -39,7 +39,7 @@ echo "CPU per PORT ratio: ${CPUPPORT}"
 
 set -x
 
-echo ./dpdk-l3fwd \
+eval ./dpdk-l3fwd \
         -l ${RANGE} \
         -n 4 \
         ${NIC1} \
